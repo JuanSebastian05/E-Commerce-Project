@@ -63,6 +63,14 @@ public class UserService implements UserDirectory {
 
     @Override
     @Transactional(readOnly = true)
+    public Optional<AuthenticatedUser> findActiveUser(UUID userId) {
+        return userRepository.findById(userId)
+            .filter(User::isEnabled)
+            .map(user -> new AuthenticatedUser(user.getId(), user.permissionCodes()));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public UserProfile getProfile(UUID userId) {
         return userRepository.findById(userId)
             .map(UserProfile::from)

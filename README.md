@@ -73,6 +73,7 @@ Maven no hace falta instalarlo: el backend incluye el wrapper `./mvnw`.
 | `CORS_ALLOWED_ORIGINS` | `http://localhost:5173` |
 | `JWT_SECRET` | sin valor: obligatoria, mínimo 32 caracteres |
 | `ADMIN_EMAIL` / `ADMIN_PASSWORD` | sin valor: si faltan, no se crea el ADMIN inicial |
+| `REFRESH_COOKIE_SECURE` | `true` |
 
 Las variables se leen del entorno o del archivo `.env` de la raíz. Los valores por defecto son solo para desarrollo.
 
@@ -113,6 +114,6 @@ Reglas:
 |--------|--------|
 | 0. Base del proyecto | ✅ |
 | Catalog | Pendiente |
-| Auth / Users | En curso: registro y login |
+| Auth / Users | En curso: sesión y logout listos; falta la administración |
 | Inventory, Cart, Orders, Payments, Shipping | Pendiente |
 | Notifications, Reviews, Administration, Audit | Pendiente |

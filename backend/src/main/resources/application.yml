@@ -32,6 +32,12 @@ app:
       secret: ${JWT_SECRET:}
       issuer: ecommerce-api
       access-token-ttl: 15m
+    refresh-token:
+      ttl: 7d
+      cookie-secure: ${REFRESH_COOKIE_SECURE:true}
+    login-rate-limit:
+      max-failures: 5
+      window: 15m
   bootstrap-admin:
     email: ${ADMIN_EMAIL:}
     password: ${ADMIN_PASSWORD:}

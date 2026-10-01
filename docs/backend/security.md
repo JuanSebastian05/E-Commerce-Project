@@ -4,11 +4,29 @@ Decisiones en [ADR-003](../architecture/decisions/ADR-003-autenticacion-y-autori
 
 ## Autenticación
 
-- `POST /api/v1/auth/login` comprueba email y contraseña y devuelve un access token JWT (HS256, 15 minutos).
+- `POST /api/v1/auth/login` comprueba email y contraseña y devuelve un access token JWT (HS256, 15 minutos) en el cuerpo y un refresh token en la cookie `refresh_token`.
 - El token lleva `iss`, `sub` (id del usuario), `iat`, `exp` y `permissions`. Se rechaza si la firma, el emisor o la expiración no son válidos.
 - La clave de firma llega por `JWT_SECRET` (mínimo 32 caracteres). Sin ella la aplicación no arranca.
 - Las contraseñas se guardan con BCrypt (coste 12). Política: mínimo 8 caracteres, máximo 72 bytes, al menos una letra y un número (RN-02).
 - Credenciales incorrectas, email inexistente y usuario desactivado devuelven el mismo `401` con el mismo mensaje. Si el email no existe, igualmente se calcula un BCrypt, para que el tiempo de respuesta no revele qué emails están registrados.
+
+## Sesión (refresh token)
+
+- Valor aleatorio de 256 bits, válido 7 días. En la base de datos solo se guarda su SHA-256.
+- Cookie `HttpOnly` (JavaScript no la puede leer), `Secure`, `SameSite=Strict` y `Path=/api/v1/auth`.
+- **Rotación:** cada `POST /auth/refresh` revoca el token usado y emite otro de la misma familia (`family_id`).
+- **Detección de robo:** si llega un token ya revocado, se revoca toda la familia; tanto el atacante como el usuario legítimo tienen que volver a iniciar sesión.
+- La fila del token se bloquea (`SELECT ... FOR UPDATE`) durante la renovación, para que dos peticiones simultáneas con el mismo token no generen dos sesiones. Consecuencia: si dos pestañas renuevan a la vez con el mismo token, la segunda se trata como reutilización y la sesión se cierra.
+- Al renovar se vuelven a leer los permisos y se comprueba que el usuario siga activo; si está desactivado, se revoca la sesión.
+- `POST /auth/logout` revoca la familia del token de la cookie y borra la cookie.
+- `REFRESH_COOKIE_SECURE=false` solo para entornos de prueba sin HTTPS distintos de localhost (los navegadores ya aceptan cookies `Secure` en http://localhost).
+
+## Límite de intentos de login
+
+- Máximo 5 intentos fallidos por combinación de email e IP en una ventana deslizante de 15 minutos. Al superarlo se responde `429` con `Retry-After`, aunque la contraseña sea correcta.
+- Un login correcto reinicia el contador.
+- La IP es la dirección remota de la conexión. Si en el futuro hay un proxy delante, habrá que configurar las cabeceras `X-Forwarded-For` de forma explícita.
+- El estado está en memoria: solo es correcto con una instancia del backend (ver ADR-003).
 
 ## Autorización
 
@@ -33,6 +51,14 @@ Al arrancar, si no existe ningún usuario con rol ADMIN y están definidas `ADMI
 - Mismo `401` para contraseña incorrecta, email inexistente y usuario desactivado.
 - El registro nunca devuelve la contraseña ni su hash, y el hash guardado es BCrypt.
 
-## Pendiente
+## Pruebas de sesión (`SessionApiIntegrationTest`, `LoginRateLimiterTest`)
 
-Refresh token en cookie `httpOnly` con rotación, logout y rate limit del login (PR 3).
+- Atributos de la cookie (`HttpOnly`, `Secure`, `SameSite=Strict`, `Path`) y que el refresh token nunca va en el cuerpo.
+- La rotación emite un token distinto y un access token válido.
+- Reutilizar un token rotado revoca también el token más reciente de la sesión.
+- Refresh sin cookie, con un token inventado, tras logout o con el usuario desactivado → `401`.
+- Tras 5 fallos, el login responde `429` aunque la contraseña sea correcta; otros emails e IPs no se ven afectados y el bloqueo se levanta al salir de la ventana.
+
+## Deuda técnica
+
+- Los refresh tokens caducados o revocados no se borran todavía. Habrá que añadir una limpieza periódica cuando el volumen lo justifique.

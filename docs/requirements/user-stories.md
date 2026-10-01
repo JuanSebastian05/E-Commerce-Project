@@ -19,6 +19,7 @@ Cada HU se relaciona con sus reglas en [business-rules.md](business-rules.md) y 
 - Reutilizar un refresh token ya usado revoca todas las sesiones de ese usuario.
 
 **HU-04 Logout.** Como usuario quiero cerrar sesión. El refresh token queda revocado.
+- Funciona con la cookie de la sesión aunque el access token ya haya caducado.
 
 **HU-05 Mi perfil.** Como usuario autenticado quiero ver mis datos, mis roles y mis permisos.
 

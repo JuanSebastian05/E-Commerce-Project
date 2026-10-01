@@ -29,10 +29,11 @@ Maven no hace falta instalarlo: el backend incluye el wrapper `./mvnw`.
 
 ## Cómo ejecutarlo en local
 
-1. **Base de datos.** Desde la raíz del repositorio:
+1. **Configuración y base de datos.** Desde la raíz del repositorio:
 
    ```bash
-   cp .env.example .env      # opcional: ajusta usuario, contraseña o puerto
+   cp .env.example .env
+   # Edita .env: rellena JWT_SECRET (openssl rand -base64 48) y ADMIN_PASSWORD
    docker compose up -d
    ```
 
@@ -45,6 +46,8 @@ Maven no hace falta instalarlo: el backend incluye el wrapper `./mvnw`.
 
    - Estado: <http://localhost:8080/api/v1/health>
    - Swagger UI: <http://localhost:8080/swagger-ui.html>
+
+   El backend no arranca si falta `JWT_SECRET`. En el primer arranque crea el usuario ADMIN con `ADMIN_EMAIL` y `ADMIN_PASSWORD`. Para probarlo, haz login en `POST /api/v1/auth/login` y pulsa **Authorize** en Swagger UI con el `accessToken`.
 
 3. **Frontend** (puerto 5173). En otra terminal:
 
@@ -68,8 +71,10 @@ Maven no hace falta instalarlo: el backend incluye el wrapper `./mvnw`.
 | `DB_PASSWORD` | `ecommerce` |
 | `SERVER_PORT` | `8080` |
 | `CORS_ALLOWED_ORIGINS` | `http://localhost:5173` |
+| `JWT_SECRET` | sin valor: obligatoria, mínimo 32 caracteres |
+| `ADMIN_EMAIL` / `ADMIN_PASSWORD` | sin valor: si faltan, no se crea el ADMIN inicial |
 
-Los valores por defecto son solo para desarrollo. En cualquier otro entorno se deben definir por variable de entorno.
+Las variables se leen del entorno o del archivo `.env` de la raíz. Los valores por defecto son solo para desarrollo.
 
 ## Pruebas
 
@@ -98,6 +103,7 @@ Reglas:
 - [Arquitectura](docs/architecture/architecture.md)
 - [Decisiones de arquitectura (ADRs)](docs/architecture/decisions/)
 - [Historias de usuario](docs/requirements/user-stories.md) y [reglas de negocio](docs/requirements/business-rules.md)
+- [API](docs/backend/api.md) y [seguridad](docs/backend/security.md)
 - [Diseño de la base de datos](docs/database/database-design.md) y [ERD](docs/database/erd.md)
 - [Migraciones de base de datos](docs/database/migrations.md)
 
@@ -107,6 +113,6 @@ Reglas:
 |--------|--------|
 | 0. Base del proyecto | ✅ |
 | Catalog | Pendiente |
-| Auth / Users | En curso: modelo de datos |
+| Auth / Users | En curso: registro y login |
 | Inventory, Cart, Orders, Payments, Shipping | Pendiente |
 | Notifications, Reviews, Administration, Audit | Pendiente |

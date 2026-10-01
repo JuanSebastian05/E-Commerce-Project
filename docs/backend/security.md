@@ -75,6 +75,13 @@ Al arrancar, si no existe ningún usuario con rol ADMIN y están definidas `ADMI
 - Un ADMIN no puede desactivarse ni quitarse `users:manage`.
 - RN-08: no se puede desactivar al último usuario activo con `roles:manage`.
 
+## Cambios en los permisos de un rol
+
+- Llegan a los usuarios de ese rol en su siguiente renovación de sesión, como mucho 15 minutos después, porque el refresh vuelve a leer los permisos. No se revocan sesiones: un rol como CUSTOMER puede tener muchos usuarios.
+- El rol ADMIN siempre conserva `users:manage` y `roles:manage`, y se sigue aplicando RN-08.
+
+Pruebas en `RoleApiIntegrationTest`: SUPPORT no puede leer ni crear roles (`403`); un rol nuevo da sus permisos a sus usuarios; validaciones de nombre y de permisos; protección del rol ADMIN; no se pueden borrar roles de sistema ni roles con usuarios.
+
 ## Deuda técnica
 
 - Los refresh tokens caducados o revocados no se borran todavía. Habrá que añadir una limpieza periódica cuando el volumen lo justifique.

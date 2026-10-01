@@ -56,6 +56,20 @@ Las páginas tienen la forma `{content, page, size, totalElements, totalPages}`.
 
 Errores de negocio (`409`): desactivarse a uno mismo, quitarse a uno mismo el permiso `users:manage`, o dejar el sistema sin ningún usuario activo con `roles:manage` (RN-08). Un rol inexistente devuelve `400`.
 
+## Roles y permisos
+
+| Método | Ruta | Acceso | HU | Descripción |
+|--------|------|--------|----|-------------|
+| GET | `/roles` | `roles:read` | HU-07 | Roles ordenados por nombre: `{id, name, description, system, permissions}`. |
+| POST | `/roles` | `roles:manage` | HU-07 | `{"name": "AUDITOR", "description": "...", "permissions": ["users:read"]}`. El nombre se guarda en mayúsculas. Responde `201`. |
+| PUT | `/roles/{id}/permissions` | `roles:manage` | HU-07 | `{"permissions": [...]}` reemplaza los permisos del rol. |
+| DELETE | `/roles/{id}` | `roles:manage` | HU-07 | Borra un rol que no sea de sistema y no tenga usuarios. Responde `204`. |
+| GET | `/permissions` | `roles:read` | HU-07 | Catálogo fijo de permisos: `{code, description}`. |
+
+Errores de negocio (`409`): nombre de rol repetido, quitar al rol ADMIN `users:manage` o `roles:manage`, borrar un rol de sistema o con usuarios, y dejar el sistema sin nadie con `roles:manage` (RN-08). Un permiso inexistente devuelve `400`.
+
+Los permisos no se crean por API: cada uno corresponde a una comprobación en el código y se añade con una migración (ADR-003).
+
 ## Pendiente en el módulo Auth + Users
 
-Administración de roles y permisos (PR 5). Ver el [diseño aprobado](../requirements/user-stories.md).
+Frontend: login, registro y sesión en el Storefront (PR 6), y pantallas del Backoffice (PR 7).

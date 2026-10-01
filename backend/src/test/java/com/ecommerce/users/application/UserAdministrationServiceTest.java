@@ -24,7 +24,8 @@ class UserAdministrationServiceTest {
     private final UserRepository userRepository = mock(UserRepository.class);
     private final ApplicationEventPublisher events = mock(ApplicationEventPublisher.class);
     private final UserAdministrationService service = new UserAdministrationService(
-        userRepository, mock(RoleRepository.class), mock(UserService.class), events);
+        userRepository, mock(RoleRepository.class), mock(UserService.class),
+        new RoleManagementGuard(userRepository), events);
 
     @Test
     void refusesToDisableTheLastActiveUserWhoCanManageRoles() {

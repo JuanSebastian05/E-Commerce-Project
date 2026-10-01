@@ -77,18 +77,23 @@ public class UserService implements UserDirectory {
             .orElseThrow(UserNotFoundException::new);
     }
 
-    /** Crea un usuario con un rol, aplicando RN-01 y RN-02. */
+    /** Crea un usuario con un rol de sistema, aplicando RN-01 y RN-02. */
     User createUser(String email, String rawPassword, String firstName, String lastName, String roleName) {
+        Role role = roleRepository.findByName(roleName)
+            .orElseThrow(() -> new IllegalStateException("No existe el rol de sistema " + roleName));
+        return createUser(email, rawPassword, firstName, lastName, List.of(role));
+    }
+
+    /** Crea un usuario con los roles indicados, aplicando RN-01 y RN-02. */
+    User createUser(String email, String rawPassword, String firstName, String lastName, List<Role> roles) {
         String normalizedEmail = User.normalizeEmail(email);
         if (userRepository.existsByEmail(normalizedEmail)) {
             throw new EmailAlreadyRegisteredException();
         }
         PasswordPolicy.validate(rawPassword);
-        Role role = roleRepository.findByName(roleName)
-            .orElseThrow(() -> new IllegalStateException("No existe el rol de sistema " + roleName));
 
         User user = new User(normalizedEmail, passwordEncoder.encode(rawPassword), firstName, lastName);
-        user.replaceRoles(List.of(role));
+        user.replaceRoles(roles);
         return userRepository.save(user);
     }
 }

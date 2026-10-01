@@ -34,6 +34,14 @@ Decisiones en [ADR-003](../architecture/decisions/ADR-003-autenticacion-y-autori
 - Los permisos del token son la unión de los de todos los roles del usuario en el momento del login.
 - `/users/me` lee roles y permisos de la base de datos, no del token, para mostrar siempre el estado actual.
 
+## Cambios de acceso
+
+- Desactivar un usuario o cambiar sus roles publica `UserAccessChangedEvent`. El módulo Auth lo escucha y revoca todos sus refresh tokens dentro de la misma transacción.
+- El access token que ya tenga sigue siendo válido hasta que caduque (15 minutos como máximo, ver ADR-003).
+- Reglas de protección: nadie puede desactivarse a sí mismo ni quitarse el permiso `users:manage`, y siempre debe quedar al menos un usuario activo con `roles:manage` (RN-08).
+- Riesgo conocido: si dos administradores se desactivan entre sí exactamente a la vez, la comprobación de RN-08 podría no detectarlo. Se acepta por ahora por ser muy improbable; la solución sería bloquear las filas de los administradores durante el cambio.
+- Hasta que exista el módulo Audit, las acciones administrativas se registran en el log con los ids del actor y del usuario afectado, sin datos sensibles.
+
 ## Primer administrador
 
 Al arrancar, si no existe ningún usuario con rol ADMIN y están definidas `ADMIN_EMAIL` y `ADMIN_PASSWORD`, se crea uno. Si ya existe, no se modifica nada.
@@ -58,6 +66,14 @@ Al arrancar, si no existe ningún usuario con rol ADMIN y están definidas `ADMI
 - Reutilizar un token rotado revoca también el token más reciente de la sesión.
 - Refresh sin cookie, con un token inventado, tras logout o con el usuario desactivado → `401`.
 - Tras 5 fallos, el login responde `429` aunque la contraseña sea correcta; otros emails e IPs no se ven afectados y el bloqueo se levanta al salir de la ventana.
+
+## Pruebas de administración (`UserAdministrationApiIntegrationTest`, `UserAdministrationServiceTest`)
+
+- Sin token → `401`. CUSTOMER → `403` en el listado. SUPPORT puede listar pero no crear (`403`).
+- Escalada vertical: un CUSTOMER que intenta asignarse ADMIN recibe `403`.
+- Al desactivar a un usuario o cambiar sus roles, su refresh token deja de valer y sus nuevos permisos se aplican en el siguiente login.
+- Un ADMIN no puede desactivarse ni quitarse `users:manage`.
+- RN-08: no se puede desactivar al último usuario activo con `roles:manage`.
 
 ## Deuda técnica
 

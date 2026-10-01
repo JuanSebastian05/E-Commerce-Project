@@ -114,6 +114,6 @@ Reglas:
 |--------|--------|
 | 0. Base del proyecto | ✅ |
 | Catalog | Pendiente |
-| Auth / Users | En curso: sesión y logout listos; falta la administración |
+| Auth / Users | En curso: falta la administración de roles y el frontend |
 | Inventory, Cart, Orders, Payments, Shipping | Pendiente |
 | Notifications, Reviews, Administration, Audit | Pendiente |

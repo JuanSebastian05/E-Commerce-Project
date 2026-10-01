@@ -5,9 +5,9 @@ Plataforma e-commerce construida por módulos sobre una arquitectura **Modular M
 | Capa | Tecnología |
 |------|------------|
 | Backend | Java 21, Spring Boot 4, Spring Security, Spring Data JPA, Bean Validation, Flyway, OpenAPI |
-| Frontend | React, TypeScript, Vite, React Router, TanStack Query, Tailwind CSS |
+| Frontend | React, TypeScript, Vite, React Router, TanStack Query, Zustand, Tailwind CSS |
 | Base de datos | PostgreSQL 16 |
-| Pruebas | JUnit 5, Mockito, Testcontainers |
+| Pruebas | JUnit 5, Mockito, Testcontainers, Playwright (E2E) |
 
 ## Estructura del repositorio
 
@@ -57,7 +57,7 @@ Maven no hace falta instalarlo: el backend incluye el wrapper `./mvnw`.
    npm run dev
    ```
 
-   - Storefront: <http://localhost:5173/>
+   - Storefront: <http://localhost:5173/> (registro en `/registro`, login en `/login`)
    - Backoffice: <http://localhost:5173/admin>
 
    Si todo está bien, ambas páginas muestran `API: UP · Base de datos: UP`.
@@ -82,6 +82,7 @@ Las variables se leen del entorno o del archivo `.env` de la raíz. Los valores 
 ```bash
 cd backend && ./mvnw verify        # requiere Docker (Testcontainers levanta PostgreSQL)
 cd frontend && npm run lint && npm run build
+cd frontend && npm run test:e2e    # requiere el backend en marcha; ver docs/testing/e2e.md
 ```
 
 ## Flujo de trabajo (Git Flow)
@@ -105,6 +106,7 @@ Reglas:
 - [Decisiones de arquitectura (ADRs)](docs/architecture/decisions/)
 - [Historias de usuario](docs/requirements/user-stories.md) y [reglas de negocio](docs/requirements/business-rules.md)
 - [API](docs/backend/api.md) y [seguridad](docs/backend/security.md)
+- [Sesión en el frontend](docs/frontend/session.md) y [pruebas E2E](docs/testing/e2e.md)
 - [Diseño de la base de datos](docs/database/database-design.md) y [ERD](docs/database/erd.md)
 - [Migraciones de base de datos](docs/database/migrations.md)
 
@@ -114,6 +116,6 @@ Reglas:
 |--------|--------|
 | 0. Base del proyecto | ✅ |
 | Catalog | Pendiente |
-| Auth / Users | Backend completo; falta el frontend |
+| Auth / Users | Backend completo; login y registro en la tienda; faltan las pantallas del Backoffice |
 | Inventory, Cart, Orders, Payments, Shipping | Pendiente |
 | Notifications, Reviews, Administration, Audit | Pendiente |

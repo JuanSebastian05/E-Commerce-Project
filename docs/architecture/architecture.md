@@ -36,10 +36,12 @@ Reglas:
 ```
 src
 ├── app/          providers (TanStack Query) y router
-├── storefront/   tienda para clientes, ruta /
+├── storefront/   tienda para clientes, ruta / (login en /login, registro en /registro)
 ├── backoffice/   administración, ruta /admin
-└── shared/       cliente HTTP y componentes comunes
+└── shared/       cliente HTTP, sesión (auth/) y componentes comunes
 ```
+
+El estado global de la sesión vive en un store de Zustand; los datos del servidor, en TanStack Query. Detalles en [sesión en el frontend](../frontend/session.md).
 
 ## Seguridad (estado actual)
 

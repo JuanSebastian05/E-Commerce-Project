@@ -38,13 +38,15 @@ public class UserAdministrationService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final UserService userService;
+    private final RoleManagementGuard roleManagementGuard;
     private final ApplicationEventPublisher events;
 
     public UserAdministrationService(UserRepository userRepository, RoleRepository roleRepository,
-            UserService userService, ApplicationEventPublisher events) {
+            UserService userService, RoleManagementGuard roleManagementGuard, ApplicationEventPublisher events) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.userService = userService;
+        this.roleManagementGuard = roleManagementGuard;
         this.events = events;
     }
 
@@ -83,7 +85,7 @@ public class UserAdministrationService {
             user.enable();
         } else {
             user.disable();
-            ensureSomeoneCanStillManageRoles();
+            roleManagementGuard.ensureSomeoneCanStillManageRoles();
             events.publishEvent(new UserAccessChangedEvent(userId));
         }
         log.info("Usuario {} {} por {}", userId, enabled ? "activado" : "desactivado", actorId);
@@ -102,19 +104,10 @@ public class UserAdministrationService {
         if (actorId.equals(userId) && !user.permissionCodes().contains(Permissions.USERS_MANAGE)) {
             throw new BusinessRuleException("No puedes quitarte a ti mismo el permiso de gestionar usuarios");
         }
-        ensureSomeoneCanStillManageRoles();
+        roleManagementGuard.ensureSomeoneCanStillManageRoles();
         events.publishEvent(new UserAccessChangedEvent(userId));
         log.info("Roles del usuario {} cambiados a {} por {}", userId, roleNames, actorId);
         return UserView.from(user);
-    }
-
-    /** RN-08: tras el cambio debe seguir existiendo un usuario activo con roles:manage. */
-    private void ensureSomeoneCanStillManageRoles() {
-        userRepository.flush();
-        if (userRepository.countActiveUsersWithPermission(Permissions.ROLES_MANAGE) == 0) {
-            throw new BusinessRuleException(
-                "El cambio dejaría el sistema sin ningún usuario activo que pueda administrar roles");
-        }
     }
 
     private User find(UUID userId) {

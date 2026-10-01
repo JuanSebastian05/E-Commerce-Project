@@ -19,6 +19,8 @@ public interface UserRepository extends JpaRepository<User, UUID>, JpaSpecificat
 
     boolean existsByRoles_Name(String roleName);
 
+    boolean existsByRoles_Id(UUID roleId);
+
     /** Usuarios activos que tienen el permiso indicado a través de alguno de sus roles (RN-08). */
     @Query("""
         select count(distinct u) from User u

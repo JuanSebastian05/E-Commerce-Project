@@ -22,3 +22,5 @@ Ejemplo: `V2__create_categories_table.sql`.
 | Versión | Descripción | Módulo |
 |---------|-------------|--------|
 | V1 | Línea base, sin tablas | 0. Base |
+| V2 | Tablas de usuarios, roles, permisos y refresh tokens | Auth + Users |
+| V3 | Permisos iniciales y roles de sistema | Auth + Users |

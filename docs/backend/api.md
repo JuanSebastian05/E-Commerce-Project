@@ -72,4 +72,4 @@ Los permisos no se crean por API: cada uno corresponde a una comprobación en el
 
 ## Pendiente en el módulo Auth + Users
 
-Frontend: login, registro y sesión en el Storefront (PR 6), y pantallas del Backoffice (PR 7).
+Frontend: pantallas del Backoffice (PR 7). El login, el registro y la sesión del Storefront ya están; ver [sesión en el frontend](../frontend/session.md).

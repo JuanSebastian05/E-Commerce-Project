@@ -1,4 +1,5 @@
 import { Link, Outlet } from 'react-router'
+import { AccountMenu } from './components/AccountMenu'
 
 export function StorefrontLayout() {
   return (
@@ -8,6 +9,7 @@ export function StorefrontLayout() {
           <Link to="/" className="text-lg font-semibold">
             TechStore
           </Link>
+          <AccountMenu />
         </nav>
       </header>
       <main className="mx-auto max-w-6xl px-4 py-8">

@@ -78,6 +78,21 @@ cd backend && ./mvnw verify        # requiere Docker (Testcontainers levanta Pos
 cd frontend && npm run lint && npm run build
 ```
 
+## Flujo de trabajo (Git Flow)
+
+| Rama | Uso |
+|------|-----|
+| `main` | Código estable y entregado. Solo recibe merges desde `develop` (o `hotfix/*`). |
+| `develop` | Integración de funcionalidades terminadas. Base de todas las ramas de trabajo. |
+| `feature/<nombre>` | Una funcionalidad pequeña. Sale de `develop` y vuelve a `develop` mediante PR. |
+| `hotfix/<nombre>` | Corrección urgente sobre `main`; se fusiona en `main` y en `develop`. |
+
+Reglas:
+
+- Nunca se hace commit directo en `main` ni en `develop`: todo entra por pull request con la CI en verde.
+- Cada PR contiene una funcionalidad pequeña y su documentación actualizada.
+- Cuando `develop` tiene un conjunto de módulos estable, se abre un PR de `develop` a `main`.
+
 ## Documentación
 
 - [Arquitectura](docs/architecture/architecture.md)

@@ -18,5 +18,8 @@ public interface UserDirectory {
      */
     Optional<AuthenticatedUser> verifyCredentials(String email, String rawPassword);
 
+    /** Usuario activo con sus permisos actuales; vacío si no existe o está desactivado. */
+    Optional<AuthenticatedUser> findActiveUser(UUID userId);
+
     UserProfile getProfile(UUID userId);
 }

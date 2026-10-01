@@ -39,7 +39,10 @@ public class SecurityConfig {
 
     private static final String[] PUBLIC_POST_ENDPOINTS = {
         "/api/v1/auth/register",
-        "/api/v1/auth/login"
+        "/api/v1/auth/login",
+        // refresh y logout se autentican con la cookie del refresh token, no con el access token.
+        "/api/v1/auth/refresh",
+        "/api/v1/auth/logout"
     };
 
     @Bean
@@ -72,6 +75,8 @@ public class SecurityConfig {
         config.setAllowedOrigins(allowedOrigins);
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        // Necesario para que el navegador envíe la cookie del refresh token desde otro origen.
+        config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/api/**", config);

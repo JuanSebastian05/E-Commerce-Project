@@ -15,6 +15,7 @@ Auth, Users, Catalog, Inventory, Cart, Orders, Payments, Shipping, Notifications
 com.ecommerce
 ├── shared/                código transversal, sin lógica de negocio
 │   ├── config/            seguridad, OpenAPI
+│   ├── persistence/       entidad base (UUID, fechas, versión)
 │   ├── web/               manejo global de errores (Problem Details, RFC 9457)
 │   └── health/            GET /api/v1/health
 └── <modulo>/              un paquete por módulo, añadido cuando se implemente

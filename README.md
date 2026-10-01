@@ -97,6 +97,8 @@ Reglas:
 
 - [Arquitectura](docs/architecture/architecture.md)
 - [Decisiones de arquitectura (ADRs)](docs/architecture/decisions/)
+- [Historias de usuario](docs/requirements/user-stories.md) y [reglas de negocio](docs/requirements/business-rules.md)
+- [Diseño de la base de datos](docs/database/database-design.md) y [ERD](docs/database/erd.md)
 - [Migraciones de base de datos](docs/database/migrations.md)
 
 ## Estado de los módulos
@@ -105,6 +107,6 @@ Reglas:
 |--------|--------|
 | 0. Base del proyecto | ✅ |
 | Catalog | Pendiente |
-| Auth / Users | Pendiente |
+| Auth / Users | En curso: modelo de datos |
 | Inventory, Cart, Orders, Payments, Shipping | Pendiente |
 | Notifications, Reviews, Administration, Audit | Pendiente |

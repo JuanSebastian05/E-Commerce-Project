@@ -43,10 +43,12 @@ src
 
 El estado global de la sesión vive en un store de Zustand; los datos del servidor, en TanStack Query. Detalles en [sesión en el frontend](../frontend/session.md).
 
-## Seguridad (estado actual)
+## Seguridad
 
-- API stateless: sin sesiones, sin formulario de login.
-- Por defecto **todo endpoint exige autenticación**; solo son públicos `/api/v1/health` y la documentación OpenAPI.
-- Sin credenciales se responde `401`. La autenticación JWT llega con el módulo Auth.
+- API stateless con JWT: access token de 15 minutos y refresh token rotado en una cookie `httpOnly` ([ADR-003](decisions/ADR-003-autenticacion-y-autorizacion.md)).
+- Por defecto **todo endpoint exige autenticación**; son públicos `/api/v1/health`, la documentación OpenAPI y registro, login, refresh y logout.
+- Autorización por permisos con `@PreAuthorize`; el frontend oculta lo que no se puede hacer, pero quien decide es el backend.
 - CORS restringido a los orígenes de `CORS_ALLOWED_ORIGINS`.
 - Los errores no exponen trazas ni mensajes internos.
+
+Detalles en [security.md](../backend/security.md).

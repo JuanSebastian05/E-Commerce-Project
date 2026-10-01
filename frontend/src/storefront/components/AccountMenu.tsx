@@ -1,16 +1,13 @@
-import { useQueryClient } from '@tanstack/react-query'
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router'
-import { logout } from '../../shared/auth/session'
+import { Link } from 'react-router'
+import { Permissions } from '../../shared/auth/permissions'
 import { useHasPermission, useSessionStore } from '../../shared/auth/sessionStore'
+import { useLogout } from '../../shared/auth/useLogout'
 
 export function AccountMenu() {
   const status = useSessionStore((state) => state.status)
   const user = useSessionStore((state) => state.user)
-  const canOpenBackoffice = useHasPermission('backoffice:access')
-  const queryClient = useQueryClient()
-  const navigate = useNavigate()
-  const [loggingOut, setLoggingOut] = useState(false)
+  const canOpenBackoffice = useHasPermission(Permissions.BACKOFFICE_ACCESS)
+  const { logout, loggingOut } = useLogout()
 
   if (status === 'loading') {
     return null
@@ -29,20 +26,6 @@ export function AccountMenu() {
     )
   }
 
-  async function handleLogout() {
-    setLoggingOut(true)
-    try {
-      await logout()
-    } catch {
-      // La sesión local ya se borró; si la API falló, la cookie caduca sola.
-    } finally {
-      // Los datos en caché pertenecían al usuario que sale.
-      queryClient.clear()
-      setLoggingOut(false)
-      navigate('/')
-    }
-  }
-
   return (
     <div className="flex items-center gap-4 text-sm">
       <span className="text-gray-600">Hola, {user.firstName}</span>
@@ -51,7 +34,7 @@ export function AccountMenu() {
           Backoffice
         </Link>
       )}
-      <button type="button" onClick={handleLogout} disabled={loggingOut} className="hover:underline disabled:opacity-50">
+      <button type="button" onClick={logout} disabled={loggingOut} className="hover:underline disabled:opacity-50">
         Cerrar sesión
       </button>
     </div>

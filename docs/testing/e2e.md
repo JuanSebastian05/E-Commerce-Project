@@ -18,13 +18,18 @@ Decisión D6 del módulo Auth + Users: las pruebas de extremo a extremo usan [Pl
    npm run test:e2e
    ```
 
-La prueba del ADMIN necesita sus credenciales; sin ellas se omite:
+Las pruebas del ADMIN necesitan sus credenciales; sin ellas se omiten:
 
 ```bash
 E2E_ADMIN_EMAIL=admin@techstore.local E2E_ADMIN_PASSWORD=... npm run test:e2e
 ```
 
-Cada prueba crea sus propios clientes con un email único, así que se pueden repetir sobre la misma base de datos.
+| Archivo | Qué cubre |
+|---------|-----------|
+| `auth.spec.ts` | Registro, login, sesión, renovación y cierre de sesión en la tienda. |
+| `backoffice.spec.ts` | Guardia del Backoffice y pantallas de Usuarios y Roles según los permisos. |
+
+Cada prueba crea sus propios usuarios y roles con nombres únicos, así que se pueden repetir sobre la misma base de datos. Las pruebas del Backoffice que necesitan al ADMIN se omiten si faltan sus credenciales.
 
 | Variable | Uso |
 |----------|-----|

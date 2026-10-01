@@ -70,6 +70,4 @@ Errores de negocio (`409`): nombre de rol repetido, quitar al rol ADMIN `users:m
 
 Los permisos no se crean por API: cada uno corresponde a una comprobación en el código y se añade con una migración (ADR-003).
 
-## Pendiente en el módulo Auth + Users
-
-Frontend: pantallas del Backoffice (PR 7). El login, el registro y la sesión del Storefront ya están; ver [sesión en el frontend](../frontend/session.md).
+Las pantallas que usan esta API están descritas en [sesión en el frontend](../frontend/session.md) y [Backoffice](../frontend/backoffice.md).

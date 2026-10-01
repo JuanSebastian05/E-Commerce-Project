@@ -18,6 +18,8 @@ Como el access token está en memoria, al recargar la página se pierde. Por eso
 | `shared/api/client.ts` | Cliente HTTP. Con `auth: true` envía el access token y, ante un `401`, renueva la sesión una vez y repite la petición. Convierte los Problem Details del backend en `ApiError`. |
 | `shared/auth/session.ts` | `restoreSession`, `login`, `logout` y `refreshAccessToken`. |
 | `shared/auth/sessionStore.ts` | Estado `loading` / `authenticated` / `anonymous`, el access token y el perfil. `useHasPermission` para mostrar u ocultar opciones. |
+| `shared/auth/useLogout.ts` | Cierra la sesión, vacía la caché de TanStack Query y vuelve a la tienda. Lo usan la tienda y el Backoffice. |
+| `shared/auth/permissions.ts` | Constantes del catálogo de permisos (deben coincidir con la migración V3). |
 | `shared/auth/passwordPolicy.ts` | La misma política de contraseña que el backend (RN-02), para avisar antes de enviar. |
 | `shared/auth/redirect.ts` | Solo deja volver a rutas internas después del login (evita redirecciones abiertas). |
 
@@ -32,7 +34,7 @@ El backend rota el refresh token en cada renovación y, si recibe uno ya usado, 
 
 - `/login`: email y contraseña. Muestra el mensaje genérico del backend para credenciales incorrectas y, con `429`, cuántos minutos esperar. Acepta `?redirect=/ruta` para volver a donde estaba el usuario.
 - `/registro`: nombre, apellido, email y contraseña. Tras crear la cuenta entra directamente.
-- Cabecera de la tienda: con sesión muestra el nombre, el enlace al Backoffice si el usuario tiene `backoffice:access` y el botón para cerrar sesión. Ocultar el enlace es solo comodidad: la protección real está en el backend.
+- Cabecera de la tienda: con sesión muestra el nombre, el enlace al Backoffice si el usuario tiene `backoffice:access` y el botón para cerrar sesión. Ocultar el enlace es solo comodidad: la protección real está en el backend. La guardia del Backoffice está descrita en [backoffice.md](backoffice.md).
 
 ## Pruebas
 

@@ -58,7 +58,7 @@ Maven no hace falta instalarlo: el backend incluye el wrapper `./mvnw`.
    ```
 
    - Storefront: <http://localhost:5173/> (registro en `/registro`, login en `/login`)
-   - Backoffice: <http://localhost:5173/admin>
+   - Backoffice: <http://localhost:5173/admin> (entra con `ADMIN_EMAIL` y `ADMIN_PASSWORD`)
 
    Si todo está bien, ambas páginas muestran `API: UP · Base de datos: UP`.
 
@@ -106,7 +106,7 @@ Reglas:
 - [Decisiones de arquitectura (ADRs)](docs/architecture/decisions/)
 - [Historias de usuario](docs/requirements/user-stories.md) y [reglas de negocio](docs/requirements/business-rules.md)
 - [API](docs/backend/api.md) y [seguridad](docs/backend/security.md)
-- [Sesión en el frontend](docs/frontend/session.md) y [pruebas E2E](docs/testing/e2e.md)
+- [Sesión en el frontend](docs/frontend/session.md), [Backoffice](docs/frontend/backoffice.md) y [pruebas E2E](docs/testing/e2e.md)
 - [Diseño de la base de datos](docs/database/database-design.md) y [ERD](docs/database/erd.md)
 - [Migraciones de base de datos](docs/database/migrations.md)
 
@@ -116,6 +116,6 @@ Reglas:
 |--------|--------|
 | 0. Base del proyecto | ✅ |
 | Catalog | Pendiente |
-| Auth / Users | Backend completo; login y registro en la tienda; faltan las pantallas del Backoffice |
+| Auth / Users | ✅ |
 | Inventory, Cart, Orders, Payments, Shipping | Pendiente |
 | Notifications, Reviews, Administration, Audit | Pendiente |

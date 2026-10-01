@@ -1,25 +1,5 @@
-import { expect, test, type Page, type Route } from '@playwright/test'
-
-const PASSWORD = 'Clave1234'
-
-function uniqueEmail() {
-  return `e2e-${Date.now()}-${Math.random().toString(36).slice(2, 8)}@example.com`
-}
-
-async function register(page: Page, email: string, password = PASSWORD) {
-  await page.goto('/registro')
-  await page.getByLabel('Nombre').fill('Ana')
-  await page.getByLabel('Apellido').fill('Pérez')
-  await page.getByLabel('Email').fill(email)
-  await page.getByLabel('Contraseña').fill(password)
-  await page.getByRole('button', { name: 'Crear cuenta' }).click()
-}
-
-async function login(page: Page, email: string, password: string) {
-  await page.getByLabel('Email').fill(email)
-  await page.getByLabel('Contraseña').fill(password)
-  await page.getByRole('button', { name: 'Entrar' }).click()
-}
+import { expect, test, type Route } from '@playwright/test'
+import { adminCredentials, login, PASSWORD, register, uniqueEmail } from './helpers.ts'
 
 test('un visitante se registra, la sesión sobrevive a recargar y puede cerrarla', async ({ page }) => {
   await register(page, uniqueEmail())
@@ -111,6 +91,8 @@ test('un cliente registrado inicia sesión y vuelve a la página que pidió', as
   await login(page, email, PASSWORD)
 
   await expect(page).toHaveURL('/admin')
+  // Un cliente no tiene backoffice:access: la guardia muestra el aviso.
+  await expect(page.getByRole('heading', { name: 'Sin acceso' })).toBeVisible()
 })
 
 test('el login no redirige fuera de la tienda', async ({ page }) => {
@@ -157,8 +139,7 @@ test('un email ya registrado muestra el conflicto', async ({ page }) => {
 })
 
 test('el ADMIN ve el acceso al Backoffice', async ({ page }) => {
-  const email = process.env.E2E_ADMIN_EMAIL
-  const password = process.env.E2E_ADMIN_PASSWORD
+  const { email, password } = adminCredentials
   test.skip(!email || !password, 'Define E2E_ADMIN_EMAIL y E2E_ADMIN_PASSWORD para esta prueba')
 
   await page.goto('/login')

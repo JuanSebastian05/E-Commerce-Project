@@ -10,6 +10,9 @@ spring:
     password: ${DB_PASSWORD:ecommerce}
   jpa:
     open-in-view: false
+    properties:
+      # Carga los roles y permisos de varios usuarios en una sola consulta (evita N+1 en los listados).
+      hibernate.default_batch_fetch_size: 50
     hibernate:
       # El esquema lo gestiona Flyway; Hibernate solo valida que las entidades coincidan.
       ddl-auto: validate

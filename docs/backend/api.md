@@ -46,7 +46,16 @@ Content-Type: application/json
 | Método | Ruta | Acceso | HU | Descripción |
 |--------|------|--------|----|-------------|
 | GET | `/users/me` | autenticado | HU-05 | Perfil, roles y permisos actuales del usuario. |
+| GET | `/users` | `users:read` | HU-06 | Listado paginado y ordenado por email. Filtros: `email` (contiene), `role`, `enabled`. Paginación: `page` (desde 0) y `size` (1 a 100, por defecto 20). |
+| GET | `/users/{id}` | `users:read` | HU-06 | Detalle de un usuario. |
+| POST | `/users` | `users:manage` | HU-06 | Crea un usuario con `roles` (al menos uno). Responde `201` con `Location`. |
+| PATCH | `/users/{id}/status` | `users:manage` | HU-06 | `{"enabled": false}` desactiva y revoca sus sesiones; `true` reactiva. |
+| PUT | `/users/{id}/roles` | `users:manage` | HU-06 | `{"roles": ["SUPPORT"]}` reemplaza los roles y revoca sus sesiones. |
+
+Las páginas tienen la forma `{content, page, size, totalElements, totalPages}`. Los usuarios se devuelven como `{id, email, firstName, lastName, enabled, roles, createdAt}`, nunca con la contraseña ni su hash.
+
+Errores de negocio (`409`): desactivarse a uno mismo, quitarse a uno mismo el permiso `users:manage`, o dejar el sistema sin ningún usuario activo con `roles:manage` (RN-08). Un rol inexistente devuelve `400`.
 
 ## Pendiente en el módulo Auth + Users
 
-Administración de usuarios (PR 4) y de roles y permisos (PR 5). Ver el [diseño aprobado](../requirements/user-stories.md).
+Administración de roles y permisos (PR 5). Ver el [diseño aprobado](../requirements/user-stories.md).

@@ -87,6 +87,11 @@ public class RefreshTokenService {
         repository.revokeFamily(familyId, clock.instant());
     }
 
+    @Transactional
+    public void revokeAllForUser(UUID userId) {
+        repository.revokeAllForUser(userId, clock.instant());
+    }
+
     /** Logout: revoca la sesión del token si existe. Un token desconocido se ignora. */
     @Transactional
     public void revokeSessionOf(String rawToken) {
